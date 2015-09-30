@@ -1,0 +1,780 @@
+module common {
+
+	typedef string UuidType;
+
+	// milliseconds since Jan 1 1970 UTC
+	typedef long long DateTimeType;
+
+	// These two produce the same structure but this way we control the name of the internal field
+	//typedef octet HexBinary16[2];
+	struct HexBinary16Type {
+	    octet data[2];
+	};
+	//@top-level false
+
+	module unitmultiplier {
+		enum UnitMultiplierKind {
+		    centi,
+		    deci,
+		    Giga,
+		    kilo,
+		    Mega,
+		    milli,
+		    micro,
+		    nano,
+		    none,
+		    pico,
+		    Tera
+		};
+	};
+
+	module unitsymbol {
+		enum UnitSymbolKind {
+		    Amp,
+		    deg,
+		    degC,
+		    Farad,
+		    gram,
+		    hour,
+		    Henry,
+		    Hz,
+		    Joule,
+		    meter,
+		    m2,
+		    m3,
+		    min,
+		    Newton,
+		    none,
+		    ohm,
+		    Pa,
+		    rad,
+		    Siemens,
+		    sec,
+		    V,
+		    VA,
+		    VAh,
+		    VAr,
+		    VArh,
+		    W,
+		    Wh,
+		    wPerVA
+		};
+	};
+
+	module flowdirection {
+		enum FlowDirectionKind {
+		    forward,
+		    lagging,
+		    leading,
+		    net,
+		    none,
+		    q1minusQ4,
+		    q1plusQ2,
+		    q1plusQ3,
+		    q1plusQ4,
+		    q2minusQ3,
+		    q2plusQ3,
+		    q2plusQ4,
+		    q3minusQ2,
+		    q3plusQ4,
+		    quadrant1,
+		    quadrant2,
+		    quadrant3,
+		    quadrant4,
+		    reverse,
+		    total,
+		    totalByPhase
+		};
+	};
+
+	module phasecode {
+		enum PhaseCodeKind {
+		    A,
+		    AB,
+		    ABC,
+		    ABCN,
+		    ABN,
+		    AC,
+		    ACN,
+		    AN,
+		    B,
+		    BC,
+		    BCN,
+		    BN,
+		    C,
+		    CN,
+		    N,
+		    s1,
+		    s12,
+		    s12N,
+		    s1N,
+		    s2,
+		    s2N
+		};
+	};
+
+	struct BasicIntervalSchedule {
+		DateTimeType startTime;   
+		unitmultiplier::UnitMultiplierKind value1Multiplier;   
+		unitsymbol::UnitSymbolKind value1Unit;   
+		unitmultiplier::UnitMultiplierKind value2Multiplier;   
+		unitsymbol::UnitSymbolKind value2Unit;   
+	};
+	//@top-level false
+
+	struct DateTimeInterval {
+		DateTimeType end;  
+		DateTimeType start;  
+	};
+	//@top-level false
+
+	struct SetPoint {
+		string controlType;  
+		unitmultiplier::UnitMultiplierKind multiplier;  
+		unitsymbol::UnitSymbolKind unit;  
+		float value;  
+	};
+	//@top-level false
+
+	struct ReadingType {
+		unitmultiplier::UnitMultiplierKind multiplier;  
+		string name;  
+		unitsymbol::UnitSymbolKind unit;  
+		flowdirection::FlowDirectionKind flowDirection;  
+		phasecode::PhaseCodeKind phases;  
+	};
+	//@top-level false
+
+	struct Reading {
+		string source;  
+		float value;
+		HexBinary16Type qualityFlag;  
+		ReadingType readingType;
+		DateTimeInterval timePeriod;  
+	};
+	//@top-level false
+
+	struct Container {
+		string logicalDeviceID;
+		DateTimeType timestamp; 
+	};
+	//@top-level false
+
+	enum CurveStyleKind {
+	    constantYValue,
+	    straightLineYValues
+	};
+
+	// =================
+	// UNUSED
+	// =================
+	struct Curve {
+		UuidType mRID;   
+		CurveStyleKind curveStyle;   
+		string description;   
+		string name;   
+		unitmultiplier::UnitMultiplierKind xMultiplier;   
+		unitsymbol::UnitSymbolKind xUnit;   
+		unitmultiplier::UnitMultiplierKind y1Multiplier;   
+		unitsymbol::UnitSymbolKind y1Unit;   
+		unitmultiplier::UnitMultiplierKind y2Multiplier;   
+		unitsymbol::UnitSymbolKind y2Unit;   
+		unitmultiplier::UnitMultiplierKind y3Multiplier;   
+		unitsymbol::UnitSymbolKind y3Unit;   
+	};
+	//@top-level false
+
+	// =================
+	// UNUSED
+	// =================
+	struct CurveData {
+		float xvalue;   
+		Curve curve; 
+		float y1value;   
+		float y2value;   
+		float y3value;   
+	};
+	//@top-level false
+
+	struct EndDeviceControlType {
+		string action;  
+		string type;  
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthEndDeviceControlSetPoints = 100;
+	typedef sequence<SetPoint, MaxLengthEndDeviceControlSetPoints> SequenceOfEndDeviceControlSetPoints;
+
+	struct EndDeviceControl {
+		string issueID;   
+		string name;   
+		EndDeviceControlType endDeviceControlType;   
+		DateTimeInterval scheduledInterval;   
+		SequenceOfEndDeviceControlSetPoints setPoints;   
+	};
+	//@top-level false
+
+	struct Event {
+		UuidType mRID;   
+		string description;   
+		string name;   
+		DateTimeType timestamp;   
+		string type;   
+		string value;   
+	};
+	//@top-level false
+
+	// =================
+	// UNUSED
+	// =================
+	struct IdentifiedObject {
+		UuidType mRID;   
+		string description;   
+		string name;   
+	};
+	//@top-level false
+
+	struct PowerSystemResource {
+		UuidType mRID;  
+		string description;  
+		string name;  
+	};
+	//@top-level false
+
+	struct IrregularTimePoint {
+		float value1;  
+		float value2;  
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthForecastScheduleIrregularTimePoints = 100;
+	typedef sequence<IrregularTimePoint, MaxLengthForecastScheduleIrregularTimePoints> SequenceOfForecastScheduleIrregularTimePoints;
+
+	struct ForecastSchedule {
+		DateTimeType startTime;   
+		unitmultiplier::UnitMultiplierKind value1Multiplier;   
+		unitsymbol::UnitSymbolKind value1Unit;   
+		unitmultiplier::UnitMultiplierKind value2Multiplier;   
+		unitsymbol::UnitSymbolKind value2Unit;   
+		string version;   
+		DateTimeType versionDateTime;   
+		SequenceOfForecastScheduleIrregularTimePoints irregularTimePoints;
+	};
+	//@top-level false
+
+	// =================
+	// UNUSED
+	// =================
+	struct Status {
+		DateTimeType timestamp;   
+		string value;   
+		HexBinary16Type qualityFlag;   
+	};
+	//@top-level false
+
+};
+
+module battery {
+
+	struct BatterySystem {
+		common::UuidType mRID;  
+		string description;  
+		string name;  
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthBatterySystemControlSetPoints = 100;
+	typedef sequence<common::SetPoint, MaxLengthBatterySystemControlSetPoints> SequenceOfBatterySystemControlSetPoints;
+
+	struct BatterySystemControl {
+		boolean isIslanded;  
+		string issueID;  
+		string name;  
+		common::EndDeviceControlType EndDeviceControlType;
+		common::DateTimeInterval scheduledInterval;  
+		SequenceOfBatterySystemControlSetPoints setPoints;  
+	};
+	//@top-level false
+
+	struct BatteryControlModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		BatterySystem batterySystem; 
+		BatterySystemControl batterySystemControl; 
+	};
+
+	struct BatteryStatus {
+		boolean isCharging;  
+		boolean isConnected;  
+		string mode;  
+		float stateOfCharge;  
+		common::DateTimeType timestamp;  
+		string value;  
+		common::HexBinary16Type qualityFlag;  
+	};
+	//@top-level false
+
+	struct BatteryEventModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		BatteryStatus batteryStatus; 
+		BatterySystem batterySystem; 
+	};
+
+	const unsigned long MaxLengthBatteryReadings = 100;
+	typedef sequence<common::Reading, MaxLengthBatteryReadings> SequenceOfBatteryReadings;
+
+	struct BatteryReadingModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		BatteryStatus batteryStatus;   
+		BatterySystem batterySystem; 
+		SequenceOfBatteryReadings readings; 
+	};
+
+
+};
+
+module generation {
+
+	struct ActivePower {
+		common::unitmultiplier::UnitMultiplierKind multiplier;   
+		common::unitsymbol::UnitSymbolKind unit;   
+		float value;   
+	};
+	//@top-level false
+
+	struct GeneratingUnit {
+		common::UuidType mRID;   
+		string description;   
+		string name;   
+		ActivePower maxOperatingP;   
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthGenerationControlSetPoints = 100;
+	typedef sequence<common::SetPoint, MaxLengthGenerationControlSetPoints> SequenceOfGenerationControlSetPoints;
+
+	struct GenerationControl {
+		string issueID;   
+		string name;   
+		common::EndDeviceControlType endDeviceControlType;   
+		common::DateTimeInterval scheduledInterval;   
+		SequenceOfGenerationControlSetPoints setPoints;   
+	};
+	//@top-level false
+
+	struct GenerationControlModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		GeneratingUnit generatingUnit; 
+		GenerationControl generationControl; 
+	};
+	//@top-level false
+
+	struct GenerationStatus {
+		boolean isAutoOn;  
+		boolean isConnected;  
+		common::DateTimeType timestamp;  
+		string value;  
+		common::HexBinary16Type qualityFlag;  
+	};
+	//@top-level false
+
+	struct GenerationEventModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		GeneratingUnit GeneratingUnit; 
+		GenerationStatus GenerationStatus; 
+	};
+
+	struct GenerationForecastModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		common::ForecastSchedule forecastSchedule; 
+		GeneratingUnit generatingUnit; 
+	};
+
+	const unsigned long MaxLengthGenerationReadings = 100;
+	typedef sequence<common::Reading, MaxLengthGenerationReadings> SequenceOfGenerationReadings;
+
+	struct GenerationReadingModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		GeneratingUnit generatingUnit; 
+		GenerationStatus generationStatus;   
+		SequenceOfGenerationReadings readings;
+	};
+
+};
+
+module load {
+
+	struct EnergyConsumer {
+		common::UuidType mRID;   
+		string description;   
+		string name;   
+		string operatingLimit;   
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthLoadControlSetPoints = 100;
+	typedef sequence<common::SetPoint, MaxLengthLoadControlSetPoints> SequenceOfLoadControlSetPoints;
+
+	struct LoadControl {
+		string issueID;   
+		string name;   
+		common::EndDeviceControlType endDeviceControlType;   
+		common::DateTimeInterval scheduledInterval;   
+		SequenceOfLoadControlSetPoints setPoints;
+	};
+	//@top-level false
+
+	struct LoadControlModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		EnergyConsumer energyConsumer; 
+		LoadControl loadControl; 
+	};
+
+	struct LoadForecastModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		EnergyConsumer energyConsumer; 
+		common::ForecastSchedule forecastSchedule; 
+	};
+
+	const unsigned long MaxLengthLoadControlReadings = 100;
+	typedef sequence<common::Reading, MaxLengthLoadControlReadings> SequenceOfLoadControlReadings;
+
+	struct LoadReadingModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		EnergyConsumer energyConsumer; 
+		SequenceOfLoadControlReadings readings;
+	};
+
+
+};
+
+module market {
+
+	enum InterTieDirectionKind {
+	    E,
+	    I,
+	    NETZERO
+	};
+
+	enum EnergyProductTypeKind {
+	    DYN,
+	    FIRM,
+	    NFRM,
+	    WHL
+	};
+
+	enum ExecutionTypeKind {
+	    DA,
+	    HASP,
+	    RTD,
+	    RTPD
+	};
+
+	enum MarketProductTypeKind {
+	    EN,
+	    LFU,
+	    NR,
+	    RC,
+	    RD,
+	    REG,
+	    RU,
+	    SR
+	};
+
+	enum MarketTypeKind {
+	    DAM,
+	    HAM,
+	    RTM,
+	    RUC
+	};
+
+	struct MarketFactors {
+		common::DateTimeType intervalEndTime;  
+		common::DateTimeType intervalStartTime;  
+	};
+	//@top-level false
+
+	struct MarketRun {
+		ExecutionTypeKind executionType;
+		common::DateTimeType marketEndTime;  
+		string marketID;  
+		string marketRunID;  
+		common::DateTimeType marketStartTime;  
+		MarketTypeKind marketType;  
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthOptimizedMicroGridMarketMarketFactors = 100;
+	typedef sequence<MarketFactors, MaxLengthOptimizedMicroGridMarketMarketFactors> SequenceOfOptimizedMicroGridMarketMarketFactors;
+
+	const unsigned long MaxLengthOptimizedMicroGridMarketMarketRuns = 100;
+	typedef sequence<MarketRun, MaxLengthOptimizedMicroGridMarketMarketRuns> SequenceOfOptimizedMicroGridMarketMarketRuns;
+
+	struct OptimizedMicroGridMarket {
+		common::UuidType mRID;  
+		common::DateTimeType actualEnd;  
+		common::DateTimeType actualStart;  
+		string description;  
+		boolean dst;  
+		common::DateTimeType end;  
+		string localTimeZone;  
+		string name;  
+		common::DateTimeType start;  
+		string status;  
+		float timeIntervalLength;  
+		common::DateTimeType tradingDay;  
+		string tradingPeriod;  
+		SequenceOfOptimizedMicroGridMarketMarketFactors marketFactors;
+		SequenceOfOptimizedMicroGridMarketMarketRuns marketRuns;
+	};
+	//@top-level false
+
+	struct InterchangeSchedule {
+		common::UuidType mRID;   
+		common::CurveStyleKind curveStyle;   
+		string description;   
+		InterTieDirectionKind directionType;   
+		MarketProductTypeKind energyType;
+		long intervalLength;   
+		string name;   
+		EnergyProductTypeKind scheduleType;
+		common::unitmultiplier::UnitMultiplierKind xMultiplier;   
+		common::unitsymbol::UnitSymbolKind xUnit;   
+		common::unitmultiplier::UnitMultiplierKind y1Multiplier;   
+		common::unitsymbol::UnitSymbolKind y1Unit;   
+		common::unitmultiplier::UnitMultiplierKind y2Multiplier;   
+		common::unitsymbol::UnitSymbolKind y2Unit;   
+		common::unitmultiplier::UnitMultiplierKind y3Multiplier;   
+		common::unitsymbol::UnitSymbolKind y3Unit;   
+		OptimizedMicroGridMarket optimizedMicroGridMarket;   
+	};
+	//@top-level false
+
+	struct InterchangeScheduleModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		InterchangeSchedule interchangeSchedule; 
+		common::PowerSystemResource powerSystemResource; 
+	};
+
+	const unsigned long MaxLengthMarketMarketFactors = 100;
+	typedef sequence<MarketFactors, MaxLengthMarketMarketFactors> SequenceOfMarketMarketFactors;
+
+	const unsigned long MaxLengthMarketMarketRuns = 100;
+	typedef sequence<MarketRun, MaxLengthMarketMarketRuns> SequenceOfMarketMarketRuns;
+
+	struct Market {
+		common::UuidType mRID;   
+		common::DateTimeType actualEnd;   
+		common::DateTimeType actualStart;   
+		string description;   
+		boolean dst;   
+		common::DateTimeType end;   
+		string localTimeZone;   
+		string name;   
+		common::DateTimeType start;   
+		string status;   
+		float timeIntervalLength;   
+		common::DateTimeType tradingDay;   
+		string tradingPeriod;   
+		SequenceOfMarketMarketFactors marketFactors;
+		SequenceOfMarketMarketRuns marketRuns;
+	};
+	//@top-level false
+
+};
+
+module recloser {
+
+	enum SwitchStatusKind {
+	    Closed,
+	    Open
+	};
+
+	struct Recloser {
+		common::UuidType mRID;   
+		string description;   
+		string name;   
+		boolean normalOpen;   
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthRecloserControlSetPoints = 100;
+	typedef sequence<common::SetPoint, MaxLengthRecloserControlSetPoints> SequenceOfRecloserControlSetPoints;
+
+	struct RecloserControl {
+		string issueID;
+		string name;
+		common::EndDeviceControlType endDeviceControlType;
+		common::DateTimeInterval scheduledInterval;
+		SequenceOfRecloserControlSetPoints setPoints;
+	};
+	//@top-level false
+
+	struct RecloserControlModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		Recloser recloser; 
+		RecloserControl recloserControl; 
+	};
+
+	struct RecloserStatus {
+		boolean isBlocked;
+		SwitchStatusKind switchStatus;
+		common::DateTimeType timestamp;
+		string value;
+		common::HexBinary16Type qualityFlag;
+	};
+	//@top-level false
+
+	struct RecloserEventModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		Recloser recloser; 
+		RecloserStatus recloserStatus; 
+	};
+
+	const unsigned long MaxLengthRecloserReadings = 100;
+	typedef sequence<common::Reading, MaxLengthRecloserReadings> SequenceOfRecloserReadings;
+
+	struct RecloserReadingModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		SequenceOfRecloserReadings readings; 
+	};
+
+};
+
+module resourcereadings {
+
+	struct Meter {
+		common::UuidType mRID;   
+		string description;   
+		string name;   
+		common::PowerSystemResource powerSystemResource;   
+	};
+	//@top-level false
+
+	const unsigned long MaxLengthResourceReadings = 100;
+	typedef sequence<common::Reading, MaxLengthResourceReadings> SequenceOfResourceReadings;
+
+	struct ResourceReadingModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		Meter meter; 
+		SequenceOfResourceReadings readings;
+	};
+
+};
+
+module security {
+
+	struct SecurityEvent {
+		common::UuidType mRID;   
+		string description;   
+		string log;   
+		string name;   
+		string severity;   
+		common::DateTimeType timestamp;   
+		string type;   
+		string value;   
+	};
+	//@top-level false
+
+	struct SecurityEventModule {
+		string logicalDeviceID; //@key 
+		common::DateTimeType timestamp; 
+		SecurityEvent securityEvent; 
+	};
+
+};
+
+module solar {
+
+	struct SolarCapability {
+		float ahrRtg;   
+		string qualityFlag;   
+		common::DateTimeType timestamp;
+		float voltage;
+		float wRtgMaxVal;   
+		float wRtgMinVal;   
+	};
+	//@top-level false
+
+	struct SolarInverter {
+		common::UuidType mRID;  
+		string description;  
+		string name;  
+	};
+	//@top-level false
+
+	struct SolarInverterStatus {
+		boolean isConnected;  
+		common::DateTimeType timestamp;  
+		string value;  
+		common::HexBinary16Type qualityFlag;  
+	};
+	//@top-level false
+
+	struct SolarCapabilityModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		SolarCapability solarCapability; 
+		SolarInverter solarInverter; 
+	};
+
+	const unsigned long MaxLengthSolarControlSetPoints = 100;
+	typedef sequence<common::SetPoint, MaxLengthSolarControlSetPoints> SequenceOfSolarControlSetPoints;
+
+	struct SolarControl {
+		boolean isIslanded;   
+		string issueID;   
+		string name;   
+		common::EndDeviceControlType endDeviceControlType;   
+		common::DateTimeInterval scheduledInterval;   
+		SequenceOfSolarControlSetPoints setPoints;   
+	};
+	//@top-level false
+
+	struct SolarControlModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp;
+		SolarControl solarControl; 
+		SolarInverter solarInverter; 
+	};
+
+	struct SolarEventModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		SolarInverter solarInverter; 
+		SolarInverterStatus solarInverterStatus; 
+	};
+
+	struct SolarForecastModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		common::ForecastSchedule forecastSchedule; 
+		SolarInverter solarInverter;
+	};
+
+	const unsigned long MaxLengthSolarReadings = 100;
+	typedef sequence<common::Reading, MaxLengthSolarReadings> SequenceOfSolarReadings;
+
+	struct SolarReadingModule {
+		string logicalDeviceID; //@key
+		common::DateTimeType timestamp; 
+		SequenceOfSolarReadings readings; 
+		SolarInverter solarInverter; 
+		SolarInverterStatus solarInverterStatus;   
+	};
+
+};
